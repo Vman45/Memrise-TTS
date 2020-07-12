@@ -56,7 +56,6 @@ class PapagoTTS:
         with open(filename, 'wb') as f:
             for chunk in res.iter_content(chunk_size=1024):
                 f.write(chunk)
-                print(chunk)
 
 words = ['안녕하세요', '잘 지냈어요']
 
