@@ -1,4 +1,8 @@
 settings.py
 __pycache__/
-AudioFiles/*
+
+# List of target words to be passed into TTS
 wordlist.txt
+
+# Output audio files
+AudioFiles/

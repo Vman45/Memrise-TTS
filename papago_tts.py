@@ -2,7 +2,7 @@ import requests
 import constants
 import base64
 import json
-
+import os
 
 class PapagoTTS:
 
@@ -53,6 +53,8 @@ class PapagoTTS:
     
     def save_file(self, res, word):
         filename = "{path}{filename}{file_ext}".format(path=self.folder, filename=word, file_ext='.mp3')
+        if not os.path.exists(self.folder):
+            os.makedirs(self.folder)
         with open(filename, 'wb') as f:
             for chunk in res.iter_content(chunk_size=1024):
                 f.write(chunk)
