@@ -6,3 +6,6 @@ wordlist.txt
 
 # Output audio files
 AudioFiles/
+
+# troubleshooting certificate
+FiddlerRoot.pem
