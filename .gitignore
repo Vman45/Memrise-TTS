@@ -1,5 +1,6 @@
 settings.py
 __pycache__/
+todo
 
 # List of target words to be passed into TTS
 wordlist.txt

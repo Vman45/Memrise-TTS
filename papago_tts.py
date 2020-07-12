@@ -63,5 +63,5 @@ words = ['안녕하세요', '잘 지냈어요']
 
 
 tts = PapagoTTS()
-#tts.translate_txt_file("wordlist.txt")
-tts.translate_list(words)
+tts.translate_txt_file("wordlist.txt")
+#tts.translate_list(words)
