@@ -18,9 +18,8 @@ class MemriseAPI:
         self.headers = constants.MEMRISE_HEADERS
         self.login_url = constants.MEMRISE_LOGIN_URL
         
-        # Creates the full course URL
+        # Creates the full course URL in format URL_STEM + "5757638/daneoneun-sinaessi-wihae-baeugi-pilyohaeyo"
         self.course_url = constants.MEMRISE_COURSE_URL + course
-        #self.course = "5757638/daneoneun-sinaessi-wihae-baeugi-pilyohaeyo"
 
         # Used for fiddler debugging
         if constants.DEBUG == True:
@@ -61,21 +60,23 @@ class MemriseAPI:
             for word in self.words:
                 f.write(word+'\r')
 
-    # Iterates through all the words in the page and posts the correct TTS
-    def update_course_TTS(self):
-
+    # Get course page
+    def scrap_course_page(self):
         print(self.course_url)
         word_id = ""
         res = self.session.get(url=self.course_url, verify=self.verify)
         page = BeautifulSoup(res.content, 'html.parser')
+        return page
 
+    # Iterates through all the words in the page and posts the correct TTS
+    def update_course_TTS(self):
+        page = self.scrap_course_page()
         for row in page.find_all('div',attrs={"class" : "thing text-text"}):
             # Match the target word to it's ID
             if row.contents[2].text in self.words:
                     # Find the 9 digit data-thing-id
                     word_id = re.findall(r"\b\d{9}\b", str(row))
                     # Avoid spamming the server too hard!
-                    time.sleep(1)
                     self.post_TTS(row.contents[2].text, word_id[0])
 
     def post_TTS(self, word, id):
@@ -94,22 +95,17 @@ class MemriseAPI:
         }
         post_audio = self.session.post(url="https://www.memrise.com/ajax/thing/cell/upload_file/", headers=self.headers, data=data, files=files, verify=self.verify)
         print(post_audio.status_code)
+        time.sleep(1)
     
     def delete_course_tts(self):
 
-        print(self.course_url)
-        word_id = ""
-        res = self.session.get(url=self.course_url, verify=self.verify)
-        page = BeautifulSoup(res.content, 'html.parser')
-
+        page = self.scrap_course_page()
         for row in page.find_all('div',attrs={"class" : "thing text-text"}):
             word_id = re.findall(r"\b\d{9}\b", str(row))
-            # Avoid spamming the server too hard!
-            time.sleep(1)
+            # Avoid spamming the server too hard!      
             self.post_delete_tts(word_id)
 
     def post_delete_tts(self, id):
-        #id = '246045451'
         data = {
             'thing_id': (None,id),
             'column_key': (None,3),
@@ -120,6 +116,7 @@ class MemriseAPI:
 
         delete_audio = self.session.post(url="https://www.memrise.com/ajax/thing/column/delete_from/", headers=self.headers, data=data, verify=self.verify)
         print(delete_audio.status_code)
+        time.sleep(1)
 
 # MemAPI = MemriseAPI('5707706/wordsineedtolearnforyeseul')
 # MemAPI.delete_course_tts()
