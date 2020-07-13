@@ -8,6 +8,7 @@ class PapagoTTS:
 
     def __init__(self):
         self.speaker = 'kyuri'
+        self.file_ext = '.mp3'
         self.speed = constants.Speed.NORMAL
         self.prefix = constants.PREFIX
         self.translate_req = constants.TRANSLATE_REQUEST
@@ -28,10 +29,16 @@ class PapagoTTS:
         with open(file, 'r', encoding='utf-8') as f:
             for line in f:
                 self.words.append(line[:-1])
+        if not os.path.exists(self.folder):
+            os.makedirs(self.folder)
         for word in self.words:
-            payload = self.craft_request(word)
-            audio = self.send_request(payload)
-            self.save_file(audio, word)
+            # Avoid sending requests for downloaded files
+            if os.path.isfile("{path}{filename}{file_ext}".format(path=self.folder, filename=word, file_ext=self.file_ext)):
+                continue
+            else:
+                payload = self.craft_request(word)
+                audio = self.send_request(payload)
+                self.save_file(audio, word)
 
     def craft_request(self, word):   
         data = 'pitch":0,"speaker":"{speaker}","speed": "{speed}","text":"{text}"'.format(
@@ -50,12 +57,13 @@ class PapagoTTS:
         return audio
     
     def save_file(self, res, word):
-        filename = "{path}{filename}{file_ext}".format(path=self.folder, filename=word, file_ext='.mp3')
-        if not os.path.exists(self.folder):
-            os.makedirs(self.folder)
-        with open(filename, 'wb') as f:
-            for chunk in res.iter_content(chunk_size=1024):
-                f.write(chunk)
+        filename = "{path}{filename}{file_ext}".format(path=self.folder, filename=word, file_ext=self.file_ext)
+        try:
+            with open(filename, 'wb') as f:
+                for chunk in res.iter_content(chunk_size=1024):
+                    f.write(chunk)
+        except Exception as e:
+            print("Could not create file with name {filename}{file_ext}, perhaps invalid characters".format(filename=word, file_ext=self.file_ext))
 
 #words = ['안녕하세요', '잘 지냈어요']
 

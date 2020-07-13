@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from lxml import html
 import requests
 import re
+import time
 
 import constants
 
@@ -73,6 +74,8 @@ class MemriseAPI:
             if row.contents[2].text in self.words:
                     # Find the 9 digit data-thing-id
                     word_id = re.findall(r"\b\d{9}\b", str(row))
+                    # Avoid spamming the server too hard!
+                    time.sleep(1)
                     self.post_TTS(row.contents[2].text, word_id[0])
 
     def post_TTS(self, word, id):
@@ -82,15 +85,44 @@ class MemriseAPI:
             }
         except Exception as e:
             print("The file AudioFiles/{word}.mp3 does not exist... skipping word".format(word=word))
+            return
         data = {
             'thing_id': (None,id),
             'cell_id': (None,3),
             'cell_type': (None,"column"),
             'csrfmiddlewaretoken': (None, self.csrftoken),
         }
-        test = self.session.post(url="https://www.memrise.com/ajax/thing/cell/upload_file/", headers=self.headers, data=data, files=files, verify=self.verify)
-        print(test.status_code)
+        post_audio = self.session.post(url="https://www.memrise.com/ajax/thing/cell/upload_file/", headers=self.headers, data=data, files=files, verify=self.verify)
+        print(post_audio.status_code)
+    
+    def delete_course_tts(self):
 
+        print(self.course_url)
+        word_id = ""
+        res = self.session.get(url=self.course_url, verify=self.verify)
+        page = BeautifulSoup(res.content, 'html.parser')
+
+        for row in page.find_all('div',attrs={"class" : "thing text-text"}):
+            word_id = re.findall(r"\b\d{9}\b", str(row))
+            # Avoid spamming the server too hard!
+            time.sleep(1)
+            self.post_delete_tts(word_id)
+
+    def post_delete_tts(self, id):
+        #id = '246045451'
+        data = {
+            'thing_id': (None,id),
+            'column_key': (None,3),
+            'file_id': (None, 1),
+            'cell_type': (None,"column"),
+            'csrfmiddlewaretoken': (None, self.csrftoken),
+        }
+
+        delete_audio = self.session.post(url="https://www.memrise.com/ajax/thing/column/delete_from/", headers=self.headers, data=data, verify=self.verify)
+        print(delete_audio.status_code)
+
+# MemAPI = MemriseAPI('5707706/wordsineedtolearnforyeseul')
+# MemAPI.delete_course_tts()
 
 # sm = Scrape_Memorise()
 # sm.scrape()
