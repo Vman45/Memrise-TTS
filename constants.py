@@ -9,8 +9,8 @@ class Speed:
 # No idea why this is needed but just is
 PREFIX = b'\xaeU\xae\xa1C\x9b,Uzd\xf8\xef'
 
-TRANSLATE_INIT = 'https://papago.naver.com/apis/tts/makeID'
-TRANSLATE_ENDPOINT = 'https://papago.naver.com/apis/tts/{id}'
+TRANSLATE_REQUEST = 'https://papago.naver.com/apis/tts/makeID'
+TRANSLATE_DOWNLOAD = 'https://papago.naver.com/apis/tts/{id}'
 
 NAVER_TTS_HEADERS = {
         "DNT" : "1",
