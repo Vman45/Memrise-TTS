@@ -3,6 +3,7 @@ from lxml import html
 import requests
 import re
 import time
+import csv
 
 import constants
 
@@ -69,8 +70,10 @@ class MemriseAPI:
         return page
 
     # Iterates through all the words in the page and posts the correct TTS
-    def update_course_TTS(self):
+    def update_course_TTS(self, wordlist):
         page = self.scrap_course_page()
+        # Only update the words in the word list
+        self.words = wordlist
         for row in page.find_all('div',attrs={"class" : "thing text-text"}):
             # Match the target word to it's ID
             if row.contents[2].text in self.words:
@@ -117,15 +120,36 @@ class MemriseAPI:
         delete_audio = self.session.post(url="https://www.memrise.com/ajax/thing/column/delete_from/", headers=self.headers, data=data, verify=self.verify)
         print(delete_audio.status_code)
         time.sleep(1)
+    
+    def bulk_add_words(self):
+        
+        words = ""
 
-# MemAPI = MemriseAPI('5707706/wordsineedtolearnforyeseul')
-# MemAPI.delete_course_tts()
+        try:
+            with open('wordlist.csv', 'r', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    words += "{0},{1}\n".format(row[0],row[1])
+            print("CSV \"wordlist.csv\" exists and has been opened")
+        except Exception as e:
+            print("failed to open wordlist.csv", e)
+            return
 
-# sm = Scrape_Memorise()
-# sm.scrape()
-# sm.update_course_TTS('course_name')
-# #sm.write_to_file()
 
-# Navigate to the next page and scrape the data
+        data = {
+            'word_delimiter': 'comma',
+            'data': words,
+            # This level id needs to be made a variable
+            'level_id': '12735486',
+            'csrfmiddlewaretoken': (None, self.csrftoken),
+        }
+
+        res = self.session.post(url="https://www.memrise.com/ajax/level/add_things_in_bulk/", headers=self.headers, data=data, verify=self.verify)
+        print(res.status_code)
+        if res.status_code == "200":
+            print("Words bulk added")
+        else:
+            print("bulk add failed")
+
 
 

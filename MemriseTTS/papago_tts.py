@@ -17,6 +17,9 @@ class PapagoTTS:
         self.folder = "AudioFiles/"
         self.words = []
 
+        self.sucess_counter = 0
+        self.already_downloaded = 0
+
     # Was used for testing lists in memory
     # def translate_list(self, words):
     #     self.words = words
@@ -34,11 +37,14 @@ class PapagoTTS:
         for word in self.words:
             # Avoid sending requests for downloaded files
             if os.path.isfile("{path}{filename}{file_ext}".format(path=self.folder, filename=word, file_ext=self.file_ext)):
+                self.already_downloaded += 1
                 continue
             else:
                 payload = self.craft_request(word)
                 audio = self.send_request(payload)
                 self.save_file(audio, word)
+        print("Word list had {0} words, {1} were already downloaded and {2} downloaded sucessfully".format(len(self.words), self.already_downloaded, self.sucess_counter))
+        return self.words
 
     def craft_request(self, word):   
         data = 'pitch":0,"speaker":"{speaker}","speed": "{speed}","text":"{text}"'.format(
@@ -62,11 +68,7 @@ class PapagoTTS:
             with open(filename, 'wb') as f:
                 for chunk in res.iter_content(chunk_size=1024):
                     f.write(chunk)
+            self.sucess_counter += 1
         except Exception as e:
             print("Could not create file with name {filename}{file_ext}, perhaps invalid characters".format(filename=word, file_ext=self.file_ext))
 
-#words = ['안녕하세요', '잘 지냈어요']
-
-
-# tts = PapagoTTS()
-# tts.translate_txt_file("wordlist.txt")
