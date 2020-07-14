@@ -11,8 +11,8 @@ class PapagoTTS:
         self.file_ext = '.mp3'
         self.speed = constants.Speed.NORMAL
         self.prefix = constants.PREFIX
-        self.translate_req = constants.TRANSLATE_REQUEST
-        self.translate_down = constants.TRANSLATE_DOWNLOAD
+        self.translate_req = constants.TTS_TRANSLATE_REQUEST
+        self.translate_down = constants.TTS_TRANSLATE_DOWNLOAD
         self.naver_tts_headers = constants.NAVER_TTS_HEADERS
         self.folder = "AudioFiles/"
         self.words = []
