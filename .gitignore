@@ -1,9 +1,10 @@
 settings.py
 __pycache__/
 todo
+.vscode/
 
 # List of target words to be passed into TTS
-wordlist.txt
+wordlist*
 
 # Output audio files
 AudioFiles/
