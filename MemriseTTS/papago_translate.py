@@ -1,4 +1,5 @@
 # Docs for API https://apidocs.ncloud.com/en/ai-naver/papago_nmt/
+# Api Usage https://developers.naver.com/apps/#/myapps/RVSabbsncGosBkd4rHM_/overview
 
 import requests
 import json

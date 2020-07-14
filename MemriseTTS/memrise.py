@@ -22,14 +22,14 @@ def main(course, wordlist=False):
 
     # # Download the TTS and pass the word list back to us as array
     words = PapTTS.download_TTS("wordlist.txt")
-    # PapTrans =  PapagoTranslate()
-    # PapTrans.translate_list(words)
+    PapTrans =  PapagoTranslate()
+    PapTrans.translate_list(words)
 
     # init memrise with a course URL
     memAPI = MemriseAPI(course)
 
-    # # Bulk add words to wordlist
-    # memAPI.bulk_add_words()
+    # Bulk add words to wordlist
+    memAPI.bulk_add_words()
 
     # Upload the TTS
     memAPI.update_course_TTS(words)
