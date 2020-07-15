@@ -3,12 +3,6 @@ from settings import NAVER_CLIENT_ID, NAVER_CLIENT_SECRET
 DEBUG = False
 DEBUG_CERT = r"FiddlerRoot.pem"
 
-class Speed:
-    #Read Speed for TTS voice
-    SLOW = 5
-    NORMAL = 0
-    FAST = -5
-
 # No idea why this is needed but just is
 PREFIX = b'\xaeU\xae\xa1C\x9b,Uzd\xf8\xef'
 

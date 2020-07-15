@@ -4,21 +4,18 @@ from memriseAPI import MemriseAPI
 from papago_tts import PapagoTTS
 from papago_translate import PapagoTranslate
 
-def main(course, wordlist=False):
+# Supply the english wordlist and it will translate and upload to the course you specified
+def upload_new_words(course, wordlist=False):
 
-    if wordlist:
-        if os.path.isfile(wordlist):
-            print ("File {filename} found".format(filename=wordlist))
-        else:
-            print("File with name {filename} cannot be opened, it might not exist".format(filename=wordlist))
-            return
+
+    if os.path.isfile(wordlist):
+        print ("File {filename} found".format(filename=wordlist))
     else:
+        print("File with name {filename} cannot be opened, it might not exist".format(filename=wordlist))
         return
-        # Loads to page into an Array
-        # memAPI.scrape_wordlist()
 
     # Uses the generated word list to download the TTS for every word 
-    PapTTS = PapagoTTS()
+    PapTTS = PapagoTTS(speaker='jinho', speed='3')
 
     # # Download the TTS and pass the word list back to us as array
     words = PapTTS.download_TTS("wordlist.txt")
@@ -34,6 +31,37 @@ def main(course, wordlist=False):
     # Upload the TTS
     memAPI.update_course_TTS(words)
 
+def add_tts(course):
+
+    # init memrise with a course URL
+    memAPI = MemriseAPI(course)
+
+    # Loads to page into an Array
+    memAPI.scrape_wordlist()
+
+    # Uses the generated word list to download the TTS for every word 
+    PapTTS = PapagoTTS(speaker='jinho', speed='3')
+
+    # # Download the TTS and pass the word list back to us as array
+    words = PapTTS.download_TTS("wordlist.txt")
+
+    # Upload the TTS
+    memAPI.update_course_TTS(words)
+
+    pass
+
+def delete_tts(course):
+    # init memrise with a course URL
+    memAPI = MemriseAPI(course)
+    
+    memAPI.delete_course_tts()
 
 
-main(course='5761720/test_course_999/',wordlist='wordlist.txt')
+
+## MAIN FUNCTIONS
+
+# upload_new_words(course='5757638/daneoneun-sinaessi-wihae-baeugi-pilyohaeyo/',wordlist='wordlist.txt')
+
+add_tts(course='5757638/daneoneun-sinaessi-wihae-baeugi-pilyohaeyo/')
+
+# delete_tts(course='5757638/daneoneun-sinaessi-wihae-baeugi-pilyohaeyo/')

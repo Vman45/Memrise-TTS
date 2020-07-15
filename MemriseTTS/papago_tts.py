@@ -6,10 +6,12 @@ import os
 
 class PapagoTTS:
 
-    def __init__(self):
-        self.speaker = 'kyuri'
+    def __init__(self, speaker, speed):
+        self.speaker = speaker
+
+        # Speed 3 is slow 0 is normal
+        self.speed = speed
         self.file_ext = '.mp3'
-        self.speed = constants.Speed.NORMAL
         self.prefix = constants.PREFIX
         self.translate_req = constants.TTS_TRANSLATE_REQUEST
         self.translate_down = constants.TTS_TRANSLATE_DOWNLOAD
