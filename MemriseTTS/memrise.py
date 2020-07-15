@@ -57,11 +57,14 @@ def delete_tts(course):
     memAPI.delete_course_tts()
 
 
-
-## MAIN FUNCTIONS
+##########################################################
+########### MAIN FUNCTIONS #############################
 
 # upload_new_words(course='5757638/daneoneun-sinaessi-wihae-baeugi-pilyohaeyo/',wordlist='wordlist.txt')
 
 add_tts(course='5757638/daneoneun-sinaessi-wihae-baeugi-pilyohaeyo/')
 
 # delete_tts(course='5757638/daneoneun-sinaessi-wihae-baeugi-pilyohaeyo/')
+
+#################################################
+#################################################
